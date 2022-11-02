@@ -2,17 +2,22 @@ const showRouter = require('./routes/shows');
 
 const express = require('express');
 const app = express();
-// const path = require('path');
-
-const mongoose = require('mongoose');
 
 app.use('/', showRouter);
+const mongoose = require('mongoose');
 
+const port = 8500;
+const hostname = 'localhost';
+const dbUrl = 'mongodb://127.0.0.1:27017/netflix';
+const atlasDbUrl = 'mongodb+srv://sail56:ZqnYz60dEcoJawp4@zomato.snbvepr.mongodb.net/netflix?retryWrites=true&w=majority'
 
-function startServer() {
-    app.listen(8888, "127.0.0.1", () => {
-        console.info(`Server running on 127.0.0.1:8888`);
-    });
-}
+mongoose.connect(atlasDbUrl, {
+    useNewUrlParser: true, useUnifiedTopology: true
+})
 
-mongoose.connect("mongodb://127.0.0.1:27017/netflix_db", { useNewUrlParser: true, useUnifiedTopology: true }).then(startServer);
+    .then(res => {
+        app.listen(port, hostname, () => {
+            console.log(`Server is running at ${hostname}:${port}`)
+        });
+    })
+    .catch(err => console.log(err));

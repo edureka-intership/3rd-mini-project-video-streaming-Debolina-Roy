@@ -1,13 +1,11 @@
 const express = require('express');
-const ctrl = require('../controllers/shows')
+const Controllers = require('../controllers/shows');
 
 const router = express.Router();
 
+router.get('/shows', Controllers.listAPI);
+router.get('/shows/:id/', Controllers.detailAPI)
 
-router.get('/shows/', ctrl.listAPI)
-router.get('/shows/:id/', ctrl.detailAPI)
-
-router.get('/stream/:id/', ctrl.streamAPI)
-
+router.get('/stream/:id', Controllers.streamAPI)
 
 module.exports = router;

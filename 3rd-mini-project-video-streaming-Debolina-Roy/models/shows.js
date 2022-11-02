@@ -5,12 +5,12 @@ const showsSchema = new mongoose.Schema({
     title_img: String,
     synopsis: String,
     banner: String,
-    ratings: String,
+    rattings: String,
     path: String,
 })
 
-const Shows = mongoose.model("shows", showsSchema);
+const shows = mongoose.model("shows", showsSchema);
 
 module.exports = {
-    Shows
+    shows
 }

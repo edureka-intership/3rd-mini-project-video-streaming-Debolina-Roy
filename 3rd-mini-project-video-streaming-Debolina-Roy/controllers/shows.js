@@ -1,47 +1,42 @@
 const fs = require('fs');
 const path = require('path');
-const { Shows } = require('../models/shows');
-const { VIDEO_DIR } = require('../constants');
-
+const { shows } = require('../models/shows')
+const { VIDEO_DIR } = require('../constants')
 
 async function listAPI(req, res) {
-    const shows = await Shows.find();
-    res.json({"shows": shows}).end();
+    const show = await shows.find();
+    res.json({ "shows": show }).end();
 }
-
 
 async function detailAPI(req, res) {
-    const show = await Shows.findOne({_id: req.params.id});
-    res.json({"show": show}).end(); 
+    const show = await shows.findOne({ _id: req.params.id });
+    res.json({ "show ": show }).end();
 }
 
-
 async function streamAPI(req, res) {
-    const CHUNK_SIZE = 10 ** 6; 
-    const range = req.headers.range; 
+    const CHUNK_SIZE = 10 ** 6;
+    const range = req.headers.range;
     console.log(range);
-    if(!range) {
-        res.status(400).send('Requires Range Header');
+    if (!range) {
+        res.status(400).send('Must be requires Range Header');
     }
-    const show = await Shows.findOne({_id: req.params.id});
-    const videPath = path.join(VIDEO_DIR, show.path);
-    const videoSize = fs.statSync(videPath).size;
-    const start = Number(range.replace(/\D/g, ""));
+    const show = await shows.findOne({ _id: req.params.id })
+    const videoPath = path.join(VIDEO_DIR, show.path);
+    const videoSize = fs.statSync(videoPath).size;
+    const start = (range.replace(/\D/g, ""));
     const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
     const contentLength = end - start + 1;
-
     const headers = {
-        "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+        "content-Range": `bytes ${start}- ${end}/${videoSize}`,
         "Accept-Ranges": "bytes",
-        "Content-Length": contentLength,
-        "Content-Type": "video/mp4"
+        "content-Length": contentLength,
+        "content-type": "video/mp4"
     }
 
     res.writeHead(206, headers);
-    const videoStream = fs.createReadStream(videPath, { start, end }); 
-    videoStream.pipe(res);
+    const VideoStream = fs.createReadStream(videoPath, { start, end });
+    VideoStream.pipe(res);
 }
-
 
 module.exports = {
     listAPI,
